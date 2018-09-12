@@ -2,24 +2,37 @@ import numpy as np
 from rubiks import Square, Face, Cube
 
 class Neural:
-	def __init__(self, input):
+	def __init__(self, input, cube_index):
 		self.input = input
-		self.input_pesos = self.read_pesos("pesos1.txt")
-		self.output_pesos = self.read_pesos("output_pesos1.txt")
+		self.cube_index = cube_index
+		self.input_pesos = self.read_pesos("input_pesos" + str(self.cube_index) + ".txt")
+		self.output_pesos = self.read_pesos("output_pesos" + str(self.cube_index) + ".txt")
 		self.nodes = np.empty(54)
-		self.rotate_right_row_up = 0		
+		self.rotate_right_row_up = 0
 		self.rotate = 0
 		self.change_right_main = 0
 		self.change_up_main = 0
 		
-	def create_pesos(self, it):
-		f = open("output_pesos" + str(it) + ".txt", "w")
-		aux = np.random.random_integers(-1, 1, size=(54,54))
+		
+	def create_input_pesos(self):
+		f = open("input_pesos" + str(self.cube_index) + ".txt", "w")
+		aux = np.random.random_integers(-10, 10, size=(54,54))
+		for i in range(0, 54):
+			for j in range(0, 54):
+				f.write(str(aux[i][j]) + " ")
+			f.write("\n")
+		return f
+
+	def create_output_pesos(self):
+		f = open("output_pesos" + str(self.cube_index) + ".txt", "w")
+		aux = np.random.random_integers(-10, 10, size=(4,54))
 		for i in range(0, 4):
 			for j in range(0, 54):
 				f.write(str(aux[i][j]) + " ")
 			f.write("\n")
 		return f
+
+	#def create_input(self)
 
 	def read_pesos(self, filename):
 		input = np.loadtxt(filename)
@@ -57,22 +70,16 @@ class Neural:
 		self.check_move(cube)
 		self.input = cube.array()
 
+	def update(self):
+		np.savetxt('input_pesos' + str(self.cube_index) +'.txt', self.input_pesos , delimiter=' ')		
+		np.savetxt("output_pesos" + str(self.cube_index) + ".txt",self.output_pesos, delimiter=' ')
+		np.savetxt('cubo' + str(self.cube_index) +'.txt', self.input , delimiter=' ')
+		
+#codigo pra gerar novos pesos aleatorios FIX THIS!!!!
+n = []
+for i in range(0, 10):
+	n.append(Neural([], i))
+	n[i].create_input_pesos()
+	n[i].create_output_pesos()
+	n[i].update()
 
-
-a = Cube()
-a.read_cube("scrambled_cube1.txt")
-a.print_cube()
-n = Neural(a.array())
-
-
-
-n.propagate(a)
-a.print_cube()
-n.propagate(a)
-a.print_cube()
-n.propagate(a)
-a.print_cube()
-n.propagate(a)
-a.print_cube()
-n.propagate(a)
-a.print_cube()

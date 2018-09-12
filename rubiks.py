@@ -74,6 +74,7 @@ class Cube:
 		self.left = Face('y')
 		self.right = Face('w')
 		self.back = Face('o')
+		self.fit = 0
 
 	def print_cube(self):
 		print("       " + self.up.squares[0].color + " " + self.up.squares[1].color + " " + self.up.squares[2].color)
@@ -283,7 +284,6 @@ class Cube:
 		
 	def read_cube(self, filename):
 		a = np.loadtxt(filename)
-		print(a)
 		for i in range(0, 9):
 			self.insert_cube_colors(self.up, a[i], i % 9)
 		for i in range(9, 18):
